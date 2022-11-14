@@ -1,0 +1,51 @@
+version: '3.9'
+services:
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - 3000:3000
+  #   platform: linux/x86_64
+  #   working_dir: /app-frontend
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
+  #   # Os `healthcheck` devem garantir que a aplicação
+  #   # está operacional, antes de liberar o container
+  #   healthcheck:
+  #     test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
+  #     timeout: 10s
+  #     retries: 5
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - 3001:3001
+    platform: linux/x86_64
+    working_dir: /backend
+    depends_on:
+      - ngcash_db
+    environment:
+      - APP_PORT=3001
+      - JWT_SECRET=jwt_secret
+      # Os dados abaixo se referem ao container `db`
+      - DB_USER=root
+      - DB_PASS=123456
+      - DB_HOST=ngcash_db
+      - DB_PORT=3306
+  db:
+    container_name: ngcash_db
+    image: postgres:14-alpine3.15
+    networks:
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: root
+      POSTGRES_DB: ngcash
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+networks:
+  webnet:
+volumes:
+  pgdata:
