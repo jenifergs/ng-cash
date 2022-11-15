@@ -1,12 +1,13 @@
+import { DECIMAL } from 'sequelize';
 import { Model, INTEGER } from 'sequelize';
 import db from '.';
 
-class Accounts extends Model {
+class Account extends Model {
 id!: number;
 balance!: number;
 }
 
-Accounts.init(
+Account.init(
 {
 id: {
 type: INTEGER,
@@ -14,16 +15,16 @@ autoIncrement: true,
 primaryKey: true,
 },
 balance: {
-type: INTEGER,
+type: DECIMAL(10, 2),
 allowNull: false,
 },
 },
 {
-tableName: 'accounts',
+tableName: 'account',
 underscored: true,
 sequelize: db,
 timestamps: false,
 }
 );
 
-export default Accounts;
+export default Account;

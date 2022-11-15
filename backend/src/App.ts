@@ -1,4 +1,6 @@
 import express = require('express');
+// import loginRouter from './routes/login.routes';
+import userRouter from './routes/user.routes';
 
 class App {
   public app: express.Express;
@@ -9,6 +11,7 @@ class App {
     this.config();
 
     this.app.get('/', (req, res) => res.json({ ok: true }));
+    this.app.use('/', userRouter)
   }
 
   private config():void {

@@ -12,7 +12,7 @@ debitedAccountId: {
   allowNull: false,
   unique: true,
   references: {
-    model: 'accounts',
+    model: 'account',
     key: 'id',
   },
   onDelete: 'CASCADE',
@@ -22,7 +22,7 @@ creditedAccountId: {
   allowNull: false,
   unique: true,
   references: {
-    model: 'accounts',
+    model: 'account',
     key: 'id',
   },
   onDelete: 'CASCADE',

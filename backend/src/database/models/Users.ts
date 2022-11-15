@@ -19,6 +19,7 @@ primaryKey: true,
 username: {
 type: STRING,
 allowNull: false,
+unique: true,
 },
 password: {
 type: STRING,
@@ -28,18 +29,18 @@ accountId: {
 type: INTEGER,
 allowNull: false,
 references: {
-	model: 'accounts',
+	model: 'account',
 	key: 'id',
 },
 },
 },
 {
-tableName: 'users',
+tableName: 'user',
 underscored: true,
 sequelize: db,
 timestamps: false,
 }
 );
 
-Users.belongsTo(Accounts, { as: 'accountId', foreignKey: 'id' });
+Users.belongsTo(Accounts, { as: 'account', foreignKey: 'accountId' });
 export default Users;

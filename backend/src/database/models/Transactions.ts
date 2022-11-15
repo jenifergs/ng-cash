@@ -23,7 +23,7 @@ debitedAccountId: {
 type: INTEGER,
 allowNull: false,
 references: {
-    model: 'accounts',
+    model: 'account',
     key: 'id',
 },
 },
@@ -31,7 +31,7 @@ creditedAccountId: {
 type: INTEGER,
 allowNull: false,
 references: {
-    model: 'accounts',
+    model: 'account',
     key: 'id',
 },
 },
@@ -41,7 +41,7 @@ allowNull: false,
 },
 },
 {
-tableName: 'users',
+tableName: 'transactions',
 underscored: true,
 sequelize: db,
 timestamps: true,
@@ -50,7 +50,7 @@ updatedAt: false,
 }
 );
 
-Transactions.belongsTo(Accounts, { as: 'debitedAccountId', foreignKey: 'id' });
-Transactions.belongsTo(Accounts, { as: 'creditedAccountId', foreignKey: 'id' });
+Transactions.belongsTo(Accounts, { as: 'debitedAccount', foreignKey: 'debitedAccountId' });
+Transactions.belongsTo(Accounts, { as: 'creditedAccount', foreignKey: 'creditedAccountId' });
 
 export default Transactions;

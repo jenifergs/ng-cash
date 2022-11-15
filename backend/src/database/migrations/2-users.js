@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
 up: async (queryInterface, Sequelize) => {
-await queryInterface.createTable('users', {
+await queryInterface.createTable('user', {
 id: {
   allowNull: false,
   autoIncrement: true,
@@ -16,12 +16,12 @@ username: {
 password: {
   type: Sequelize.STRING,
 },
-accountId: {
+account_id: {
   allowNull: false,
   type: Sequelize.INTEGER,
 
   references: {
-    model: 'accounts',
+    model: 'account',
     key: 'id',
   },
   onDelete: 'CASCADE',
@@ -30,6 +30,6 @@ accountId: {
 });
 },
 down: async (queryInterface, Sequelize) => {
-await queryInterface.dropTable('users');
+await queryInterface.dropTable('user');
 }
 };
