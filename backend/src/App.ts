@@ -1,5 +1,7 @@
 import express = require('express');
-// import loginRouter from './routes/login.routes';
+import balanceRouter from './routes/balance.routes';
+import loginRouter from './routes/login.routes';
+import transactionRouter from './routes/transaction.routes';
 import userRouter from './routes/user.routes';
 
 class App {
@@ -11,7 +13,10 @@ class App {
     this.config();
 
     this.app.get('/', (req, res) => res.json({ ok: true }));
-    this.app.use('/', userRouter)
+    this.app.use('/', userRouter);
+    this.app.use('/', loginRouter);
+    this.app.use('/', balanceRouter);
+    this.app.use('/', transactionRouter);
   }
 
   private config():void {
