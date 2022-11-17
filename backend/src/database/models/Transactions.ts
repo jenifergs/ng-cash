@@ -1,56 +1,61 @@
+import { Model, INTEGER, DECIMAL } from 'sequelize';
 import Accounts from './Accounts';
-import { Model, INTEGER } from 'sequelize';
 import db from '.';
-import { DECIMAL } from 'sequelize';
 
 class Transactions extends Model {
-id!: number;
-debitedAccountId!: number;
-creditedAccountId !: number;
-value!: number;
-createdAt: Date;
+  id!: number;
+  debitedAccountId!: number;
+  creditedAccountId !: number;
+  value!: number;
+  createdAt: Date;
 }
 
 Transactions.init(
-{
-id: {
-type: INTEGER,
-autoIncrement: true,
-primaryKey: true,
-},
+  {
+    id: {
+      type: INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
 
-debitedAccountId: {
-type: INTEGER,
-allowNull: false,
-references: {
-    model: 'account',
-    key: 'id',
-},
-},
-creditedAccountId: {
-type: INTEGER,
-allowNull: false,
-references: {
-    model: 'account',
-    key: 'id',
-},
-},
-value: {
-type: DECIMAL,
-allowNull: false,
-},
-},
-{
-tableName: 'transactions',
-underscored: true,
-sequelize: db,
-timestamps: true,
-createdAt: true,
-updatedAt: false,
-}
+    debitedAccountId: {
+      type: INTEGER,
+      allowNull: false,
+      references: {
+        model: 'account',
+        key: 'id',
+      },
+    },
+    creditedAccountId: {
+      type: INTEGER,
+      allowNull: false,
+      references: {
+        model: 'account',
+        key: 'id',
+      },
+    },
+    value: {
+      type: DECIMAL,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'transactions',
+    underscored: true,
+    sequelize: db,
+    timestamps: true,
+    createdAt: true,
+    updatedAt: false,
+  },
 );
 
-Transactions.belongsTo(Accounts, { as: 'debitedAccount', foreignKey: 'debitedAccountId' });
-Transactions.belongsTo(Accounts, { as: 'creditedAccount', foreignKey: 'creditedAccountId' });
+Transactions.belongsToMany(
+  Accounts,
+  { as: 'debitedAccount', foreignKey: 'credited_account_id', through: 'account' },
+);
+Transactions.belongsToMany(
+  Accounts,
+  { as: 'creditedAccount', foreignKey: 'debited_account_id', through: 'account' },
+);
 
 export default Transactions;

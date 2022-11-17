@@ -16,4 +16,10 @@ export default class JwtUtil implements Token {
   generateToken(payload: object) {
     return sign(payload, this.secret, { expiresIn: '24h' });
   }
+
+  getIdUSer = async (token: string) => {
+    const user = await this.validateToken(token);
+    const { id } = user;
+    return id;
+  };
 }

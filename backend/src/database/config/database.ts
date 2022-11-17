@@ -1,3 +1,4 @@
+/* eslint-disable import/no-import-module-exports */
 import 'dotenv/config';
 import { Options } from 'sequelize';
 
@@ -12,6 +13,6 @@ const config: Options = {
     timezone: 'Z',
   },
   logging: false,
-}
+};
 
 module.exports = config;
