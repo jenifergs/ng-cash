@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsnd --respawn --transpile-only src/server.ts",
-    "build": "tsc"
+    "migrate": "npx sequelize-cli db:migrate",
+    "build": "tsc -p tsconfig.json",
+    "start": "node build/server.js"
   },
   "author": "",
   "license": "ISC",

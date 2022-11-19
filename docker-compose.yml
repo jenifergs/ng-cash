@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.5"
 services:
   # frontend:
   #   build: ./frontend
@@ -15,37 +15,50 @@ services:
   #     test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
   #     timeout: 10s
   #     retries: 5
+  postgres:
+    restart: always
+    container_name: postgres
+    image: postgres:14-alpine3.15
+    environment:
+      # define password from root user
+
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      PGDATA: /data/postgres
+
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # add healthcheck to wait for postgres to be ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   backend:
+    restart: always
     container_name: backend
     build: ./backend
     ports:
-      - 3001:3001
-    platform: linux/x86_64
+      - 5433:5433
     working_dir: /backend
     depends_on:
-      - ngcash_db
+      postgres:
+        condition: service_healthy
     environment:
-      - APP_PORT=3001
+      - APP_PORT=5433
       - JWT_SECRET=jwt_secret
-      # Os dados abaixo se referem ao container `db`
-      - DB_USER=root
-      - DB_PASS=123456
-      - DB_HOST=ngcash_db
-      - DB_PORT=3306
-  db:
-    container_name: ngcash_db
-    image: postgres:14-alpine3.15
-    networks:
-      - webnet
-    environment:
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: root
-      POSTGRES_DB: ngcash
-    ports:
-      - '5432:5432'
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+
 networks:
+  external:
+    name: backend_default
   webnet:
+    driver: bridge
 volumes:
   pgdata:
