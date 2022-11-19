@@ -11,7 +11,7 @@ export default class BalanceService {
   }
 
   getBalance = async (token: string) => {
-    const userID = this.jwtUtil.getIdUSer(token);
+    const userID = await this.jwtUtil.getIdUSer(token);
     const user = await Users.findOne({ where: { id: userID } });
     if (!user) throw new Error('User not found');
     const { accountId } = user;

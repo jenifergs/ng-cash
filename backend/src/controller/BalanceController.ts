@@ -10,13 +10,13 @@ export default class BalanceController {
   }
 
   getBalance = async (req: Request, res: Response) => {
-    const { token } = req.headers;
+    const { authorization } = req.headers;
     try {
-      const balance = await this.service.getBalance(token as string);
+      const balance = await this.service.getBalance(authorization as string);
       return res.status(200).json({ balance });
     } catch (error) {
       const errorMapped = error as Error;
-      return res.status(400).json({ message: errorMapped.message });
+      return res.status(400).json({ error: errorMapped.message });
     }
   };
 }

@@ -19,7 +19,7 @@ export default class UserController {
       return res.status(200).json({ token });
     } catch (error) {
       const errorMapped = error as Error;
-      return res.status(400).json({ message: errorMapped.message });
+      return res.status(400).json({ error: errorMapped.message });
     }
   };
 
@@ -31,7 +31,7 @@ export default class UserController {
       return res.status(200).json({ token });
     } catch (error) {
       const errorMapped = error as Error;
-      return res.status(400).json({ message: errorMapped.message });
+      return res.status(400).json({ error: errorMapped.message });
     }
   };
 }

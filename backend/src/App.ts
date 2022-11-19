@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import balanceRouter from './routes/balance.routes';
 import loginRouter from './routes/login.routes';
 import transactionRouter from './routes/transaction.routes';

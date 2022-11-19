@@ -15,11 +15,11 @@ export default class TransactionController {
     const { authorization } = req.headers;
     try {
       ok(authorization);
-      const balance = await this.service.transfer(authorization as string, cashIn, cashOut, value);
-      return res.status(200).json({ balance });
+      const transfer = await this.service.transfer(authorization as string, cashIn, cashOut, value);
+      return res.status(200).json({ transfer: transfer });
     } catch (error) {
       const errorMapped = error as Error;
-      return res.status(400).json({ message: errorMapped.message });
+      return res.status(400).json({ error: errorMapped.message });
     }
   };
 
@@ -30,7 +30,7 @@ export default class TransactionController {
       return res.status(200).json({ transactions: transaction });
     } catch (error) {
       const errorMapped = error as Error;
-      return res.status(400).json({ message: errorMapped.message });
+      return res.status(400).json({ error: errorMapped.message });
     }
   };
 

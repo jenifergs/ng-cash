@@ -102,23 +102,30 @@ export default class TransactionService {
     const idUser = await this.jwtUtil.getIdUSer(token);
     const cashout = await Users.findOne({ where: { username: cashOut } });
     const cashin = await Users.findOne({ where: { username: cashIn } });
+    
     if (!cashout || !cashin) throw new Error('not found');
     if (idUser !== cashout.dataValues.id) throw new Error('not authorized');
 
     if (cashin.dataValues.accountId === cashout.dataValues.accountId) {
       throw new Error('You can\'t transfer to yourself');
     }
+
     const { accountIn, accountOut } = await this
       .getAccount(cashin.dataValues.accountId, cashout.dataValues.accountId);
+    
     if (!accountIn || !accountOut) throw new Error('Account not found');
+    
     const { balance: balanceIn } = accountIn.dataValues;
     const { balance: balanceOut } = accountOut.dataValues;
-    if (balanceIn < value) throw new Error('Insufficient funds');
-    const newBalance = Number(balanceIn) - value;
-    await Account.update({ balance: newBalance }, { where: { id: accountIn.dataValues.id } });
-    const newbalanceOut = Number(balanceOut) + value;
 
-    return this.updateBalance(newbalanceOut, accountOut, accountIn, value);
+    if (balanceOut < value) throw new Error('Insufficient funds'); // verifica se a conta que deveria estar enviando tem saldo suficiente para a transferencia
+    
+    const newBalance = Number(balanceOut) - value; // subtrai o valor da transferencia do saldo da conta que deveria estar enviando
+    await Account.update({ balance: newBalance }, { where: { id: accountIn.dataValues.id } }); // atualiza o saldo da conta que deveria estar enviando
+
+    const newbalanceOut = Number(balanceIn) + value;
+    await Account.update({ balance: newbalanceOut }, { where: { id: accountOut.dataValues.id } });
+    return this.updateTransactions( accountOut, accountIn, value);
   };
 
   getAccount = async (credited: number, debited: number) => {
@@ -127,13 +134,11 @@ export default class TransactionService {
     return { accountIn, accountOut };
   };
 
-  updateBalance = async (
-    newbalanceOut: number,
+  updateTransactions = async (
     accountOut: Account,
     accountIn: Account,
     value: number,
   ) => {
-    await Account.update({ balance: newbalanceOut }, { where: { id: accountOut.dataValues.id } });
     const transaction = await Transactions
       .create({ creditedAccountId: accountIn.dataValues.id,
         debitedAccountId: accountOut.dataValues.id,
