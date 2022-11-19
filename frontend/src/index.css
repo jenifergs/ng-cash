@@ -1,0 +1,73 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.login {
+  width: 100vw;
+  height: 100vh;
+display: flex;
+justify-content: center;
+}
+
+.login__container {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  border: rgb(194, 193, 193) 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .login__container label {
+    width: 260px;
+  }
+
+  .login__container input {
+    width: 100%;
+    height: 30px;
+    border: rgb(194, 193, 193) 1px solid;
+    border-radius: 5px;
+    padding: px;
+  }
+
+.buttons {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 5px;
+}
+
+.buttons button {
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+  background-color: rgb(194, 193, 193);
+  cursor: pointer;
+  padding: 5px;
+}
+
+.buttons button:hover {
+  background-color: rgb(18, 18, 18);
+  transition-property: background-color;
+  transition-duration: 0.7s;
+  color: white;
+  opacity: 0.8;
+}
+
+
