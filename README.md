@@ -36,7 +36,7 @@ O banco de dados segue a estrutura:
 A aplicação é feita é feita com Express + Sequelize e utiliza typescript.
 A aplicação segue uma arquitetura MVC, e possui rotas acessiveis via swagger para testes, mas você também poderá importar automaticamente as requisições para o seu insomnia para realizar os testes:
 
-[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=NG%20Cash&uri=http%3A%2F%2Fexample.json)
+[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=NG%20CASH&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fjenifergs%2Fng-cash%2Fmaster%2Fassets%2Finsomnia.json)
 
 ### Frontend
 A aplicação é feita em ReactJs e Hooks e utiliza typescript, nela podemos navegar por 3 paginas diferentes:
