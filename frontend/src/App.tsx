@@ -1,15 +1,10 @@
-import React from 'react';
-import AppRoutes from './components/AppRoutes';
-
-
-
+import AppRoutes from "./components/AppRoutes";
 
 function App() {
   return (
-    <main> 
+    <main>
       <AppRoutes />
     </main>
-   
   );
 }
 

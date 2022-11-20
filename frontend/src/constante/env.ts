@@ -1,3 +1,3 @@
 export const contante = {
-host : 'http://localhost:5433'
+  host: "http://localhost:5433",
 };

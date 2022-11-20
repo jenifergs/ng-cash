@@ -1,68 +1,83 @@
 import { useState } from "react";
 import { contante } from "../constante/env";
-import { useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from "react-router-dom";
+import { decodeToken } from "../services/TokenService";
 
 export default function Register() {
   const [username, setUsername] = useState<string>("");
-const [password, setPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-const navigate = useNavigate();
+  decodeToken(
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImplbmlmZXJncyIsImlkIjoxLCJpYXQiOjE2Njg4NzExNjUsImV4cCI6MTY2ODk1NzU2NX0.gKzjChRAjXMksZlPoXYj1Cz77qB1OlIa2wSMlMofBeU"
+  );
 
-const handleSubmit = async (e: any) => {
-  e.preventDefault();
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+  const navigate = useNavigate();
 
-  const userData = JSON.stringify({
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const userData = JSON.stringify({
       username: username,
-      password: password
-  });
+      password: password,
+    });
 
-  const requestOptions = {
-      method: 'POST',
+    const requestOptions = {
+      method: "POST",
       headers: myHeaders,
       body: userData,
-      redirect: 'follow'
+      redirect: "follow",
+    };
+
+    const response = await fetch(
+      `${contante.host}/user`,
+      requestOptions as RequestInit
+    );
+    const data = await response.json(); // { token}
+
+    if (response.status === 200) {
+      localStorage.setItem("token", data.token);
+      navigate("/home");
+    } else {
+      alert(`Error: ${data.error}`);
+    }
   };
 
-  const response = await fetch(`${contante.host}/user`, requestOptions as RequestInit)
-  const data = await response.json() // { token}
-
-  if(response.status === 200) {
-    localStorage.setItem('token', data.token)
-    navigate('/home')
-  } else {
-    alert(`Error: ${data.error}`)
-  }
-  
-}
-
-const handleClick = () => {
-  navigate('/login')
-};
+  const handleClick = () => {
+    navigate("/login");
+  };
   return (
     <div className="login">
       <div className="login__container">
         <h2>New Account</h2>
-        <label htmlFor="username">Username:
-        <br />
-        <input type="text" name="" id="username" onChange={({target: {value}}) => setUsername(value)} />
+        <label htmlFor="username">
+          Username:
+          <br />
+          <input
+            type="text"
+            name=""
+            id="username"
+            onChange={({ target: { value } }) => setUsername(value)}
+          />
         </label>
 
-        <label htmlFor="password">Password:
-        <br />
-        <input type="password" name="" id="password" onChange={({target: {value}}) => setPassword(value)} />
+        <label htmlFor="password">
+          Password:
+          <br />
+          <input
+            type="password"
+            name=""
+            id="password"
+            onChange={({ target: { value } }) => setPassword(value)}
+          />
         </label>
         <div className="buttons">
-        <button onClick={handleSubmit}>Create</button>
-        <span>or</span>
-        <button onClick={ handleClick }>Sign In</button>  
-
+          <button onClick={handleSubmit}>Create</button>
+          <span>or</span>
+          <button onClick={handleClick}>Sign In</button>
         </div>
-
-        </div>
+      </div>
     </div>
   );
 }
