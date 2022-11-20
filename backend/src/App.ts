@@ -1,4 +1,6 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import * as YAML from 'yamljs';
 import balanceRouter from './routes/balance.routes';
 import loginRouter from './routes/login.routes';
 import transactionRouter from './routes/transaction.routes';
@@ -29,6 +31,10 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+
+    // read swagger file swagger.yml
+    const swaggerDocument = YAML.load('./swagger.yaml');
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 
   public start(PORT: string | number):void {

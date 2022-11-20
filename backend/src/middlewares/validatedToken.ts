@@ -4,7 +4,7 @@ import JwtUtil from '../utils/JwtUtil';
 const validatedToken = async (req: Request, res: Response, next: NextFunction) => {
   const validated = new JwtUtil();
   const { authorization } = req.headers;
-  const token = authorization?.split(" ")[1];
+  const token = authorization?.split(' ')[1];
 
   req.headers.authorization = token;
 

@@ -11,7 +11,7 @@ export default class TransactionService {
     this.jwtUtil = jwtUtil || new JwtUtil();
   }
 
-  getAllTransactions = async (token: string) => {
+  getAllUserTransactions = async (token: string) => {
     const userToken = await this.jwtUtil.validateToken(token);
     const { id } = userToken;
     const user = await Users.findOne({ where: { id } });
@@ -20,11 +20,21 @@ export default class TransactionService {
     const { accountId } = user;
     const account = await Account.findOne({ where: { id: accountId } });
     if (!account) throw new Error('Account not found');
-
     const creditedTransactions = await Transactions
       .findAll({ where: { creditedAccountId: account.dataValues.id } });
     const debitedtransactions = await Transactions
       .findAll({ where: { debitedAccountId: account.dataValues.id } });
+    const result = [...creditedTransactions, ...debitedtransactions];
+    return result;
+  };
+
+  private getAllTransactionsByAccount = async (accountId: number) => {
+    const creditedTransactions = await Transactions.findAll({
+      where: { creditedAccountId: accountId },
+    });
+    const debitedtransactions = await Transactions.findAll({
+      where: { debitedAccountId: accountId },
+    });
     const result = [...creditedTransactions, ...debitedtransactions];
     return result;
   };
@@ -46,11 +56,31 @@ export default class TransactionService {
     const { accountId } = user;
     const account = await Account.findOne({ where: { id: accountId } });
     if (!account) throw new Error('Account not found');
-    let teste: Transactions[] = [];
+    const transactions: Transactions[] = await this.getTransactions(
+      cashIn,
+      account,
+      cashOut,
+      createdAt,
+    );
 
-    teste = await this.getTransactions(cashIn, account, cashOut, createdAt);
+    return transactions;
+  };
 
-    return teste;
+  getTransactionsFilteredByDate = async (
+    transactions: Transactions[],
+    account: number,
+    createdAt?: string,
+  ) => {
+    let response = transactions;
+    if (createdAt) {
+      if (transactions.length === 0) response = await this.getAllTransactionsByAccount(account);
+      response = response.filter((transaction) => transaction
+        .dataValues
+        .createdAt
+        .toISOString()
+        .includes(createdAt));
+    }
+    return response;
   };
 
   getTransactions = async (
@@ -60,72 +90,77 @@ export default class TransactionService {
     createdAt: string | undefined,
   ) => {
     let transaction: Transactions[] = [];
-    transaction.push(...await this.getCrediteds(cashIn, account, transaction));
-    transaction.push(...await this.getDebiteds(cashOut, account, transaction));
 
-    if (createdAt) {
-      const transactionDate = transaction.filter((filteredTransaction) => filteredTransaction
-        .dataValues.createdAt.toISOString().includes(createdAt));
-      transaction = transactionDate;
-      return transaction;
-    }
+    transaction.push(...await this.getCrediteds(cashIn, account));
+    transaction.push(...await this.getDebiteds(cashOut, account));
+    transaction = await this.getTransactionsFilteredByDate(
+      transaction,
+      account.dataValues.id,
+      createdAt,
+    );
     return transaction;
   };
 
   getCrediteds = async (
     cashIn: string | undefined,
     account: Account,
-    baseTransactions: Transactions[],
   ) => {
     if (cashIn === 'true') {
       const transactions = await Transactions
         .findAll({ where: { creditedAccountId: account.dataValues.id } });
-      return [...baseTransactions, ...transactions];
+      return transactions;
     }
-    return baseTransactions;
+    return [];
   };
 
   getDebiteds = async (
     cashOut: string | undefined,
     account: Account,
-    baseTransactions: Transactions[],
   ) => {
     if (cashOut === 'true') {
       const transaction2 = await Transactions
         .findAll({ where: { debitedAccountId: account.dataValues.id } });
-      return [...baseTransactions, ...transaction2];
+      return transaction2;
     }
-    return baseTransactions;
+    return [];
   };
 
-  transfer = async (token: string, cashIn: string, cashOut: string, value: number) => {
-    const idUser = await this.jwtUtil.getIdUSer(token);
-    const cashout = await Users.findOne({ where: { username: cashOut } });
-    const cashin = await Users.findOne({ where: { username: cashIn } });
-    
+  private validateCashoutAndCashInUser = async (
+    cashin: Users | null,
+    cashout: Users | null,
+    idUser: number | undefined,
+  ) => {
     if (!cashout || !cashin) throw new Error('not found');
     if (idUser !== cashout.dataValues.id) throw new Error('not authorized');
 
     if (cashin.dataValues.accountId === cashout.dataValues.accountId) {
       throw new Error('You can\'t transfer to yourself');
     }
+  };
+
+  transfer = async (token: string, cashIn: string, cashOut: string, value: number) => {
+    const idUser = await this.jwtUtil.getIdUSer(token);
+    const cashout = await Users.findOne({ where: { username: cashOut } });
+    const cashin = await Users.findOne({ where: { username: cashIn } });
+
+    await this.validateCashoutAndCashInUser(cashin, cashout, idUser);
 
     const { accountIn, accountOut } = await this
-      .getAccount(cashin.dataValues.accountId, cashout.dataValues.accountId);
-    
+      .getAccount(cashin!.dataValues.accountId, cashout!.dataValues.accountId);
+
     if (!accountIn || !accountOut) throw new Error('Account not found');
-    
+
     const { balance: balanceIn } = accountIn.dataValues;
     const { balance: balanceOut } = accountOut.dataValues;
 
     if (balanceOut < value) throw new Error('Insufficient funds'); // verifica se a conta que deveria estar enviando tem saldo suficiente para a transferencia
-    
+
     const newBalance = Number(balanceOut) - value; // subtrai o valor da transferencia do saldo da conta que deveria estar enviando
-    await Account.update({ balance: newBalance }, { where: { id: accountIn.dataValues.id } }); // atualiza o saldo da conta que deveria estar enviando
+    await Account.update({ balance: newBalance }, { where: { id: accountOut.dataValues.id } }); // atualiza o saldo da conta que deveria estar enviando
 
     const newbalanceOut = Number(balanceIn) + value;
-    await Account.update({ balance: newbalanceOut }, { where: { id: accountOut.dataValues.id } });
-    return this.updateTransactions( accountOut, accountIn, value);
+    await Account.update({ balance: newbalanceOut }, { where: { id: accountIn.dataValues.id } });
+    return this.updateTransactions(accountOut, accountIn, value);
   };
 
   getAccount = async (credited: number, debited: number) => {

@@ -16,7 +16,7 @@ export default class TransactionController {
     try {
       ok(authorization);
       const transfer = await this.service.transfer(authorization as string, cashIn, cashOut, value);
-      return res.status(200).json({ transfer: transfer });
+      return res.status(200).json({ transfer });
     } catch (error) {
       const errorMapped = error as Error;
       return res.status(400).json({ error: errorMapped.message });
@@ -26,7 +26,7 @@ export default class TransactionController {
   getAllTransactions = async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     try {
-      const transaction = await this.service.getAllTransactions(authorization as string);
+      const transaction = await this.service.getAllUserTransactions(authorization as string);
       return res.status(200).json({ transactions: transaction });
     } catch (error) {
       const errorMapped = error as Error;
