@@ -1,0 +1,824 @@
+openapi: 3.0.0
+info:
+  title: Ng Cash
+  description: >-
+    NG-Test Application
+
+
+    **Created By: Jenifer G. da Silva**
+
+
+    [Jenifer Goncalves |
+    LinkedIn](https://www.linkedin.com/in/jenifergoncalvesdev/)
+
+
+    [jenifergs (Jenifer Gonçalves) · GitHub](https://github.com/jenifergs)
+  version: 1.0.0
+servers:
+  - url: http://localhost:5433
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Healthcheck
+    description: This route exists to check if the server is active
+  - name: Users
+    description: User routes allow user creation and login
+  - name: Ballance
+    description: Return data from the account balance on the logged user
+  - name: Transactions
+    description: >-
+      This set of routes responsible for handling the transfer (transaction)
+      between users, and list of transactions
+paths:
+  /:
+    get:
+      tags:
+        - Healthcheck
+      summary: Healthcheck
+      description: Verify if the server is on
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /user:
+    post:
+      tags:
+        - Users
+      summary: Create User
+      description: >-
+        This Route create a new user from a username that must be unique and a
+        valid password and returns an access token valid for the next 24 hours.
+
+
+        **The following rules are used for user creation:**
+
+
+        - Must be unique username
+
+        - Username must be have at least 3 characters
+
+        - Password must be have at least 8 characters beign a number and a
+        capital letter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: outro5
+                password: Passowrd***asd1312
+      responses:
+        "400":
+          description: Bad Request
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: GET,POST,DELETE,OPTIONS,PUT,PATCH
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "55"
+            ETag:
+              schema:
+                type: string
+                example: W/"37-Rws2HztIqmr+vo8NbLOssrdqO+g"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 11:56:39 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Invalid username length
+                  value:
+                    error: Username must be at least 3 characters long
+                example-1:
+                  summary: Invalid username already exists
+                  value:
+                    message: Username already exists
+                example-2:
+                  summary: Invalid password
+                  value:
+                    error: Password must be at least 8 characters
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im91dHJvNSIsImlkIjo4LCJpYXQiOjE2Njg5NTUwNTcsImV4cCI6MTY2OTA0MTQ1N30._e3zDOdrkOGEsGAjtl29wB45YIAO4GWHvTtaeZ2zg4A
+  /login:
+    post:
+      tags:
+        - Users
+      summary: Authentication
+      description: >-
+        Generates an access token from a user's credentials, valid for next 24
+        hours
+
+
+        **For optimization, authentication will only be performed if:**
+
+
+        - Username must be have at least 3 characters
+
+        - Password must be have at least 8 characters beign a number and a
+        capital letter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: outro3
+                password: Passowrd***asd1312
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: GET,POST,DELETE,OPTIONS,PUT,PATCH
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "180"
+            ETag:
+              schema:
+                type: string
+                example: W/"b4-p+Mw459R7hCY6Z3eWy62/3Nnpe0"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 12:03:04 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImplbmlmZXJncyIsImlkIjo4LCJpYXQiOjE2Njg4NTkzODQsImV4cCI6MTY2ODk0NTc4NH0.wZK2z_6UROHpN_yXnjLogXknGY4z3t8bJDobJXDmOfg
+        "400":
+          description: Bad Request
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: GET,POST,DELETE,OPTIONS,PUT,PATCH
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "55"
+            ETag:
+              schema:
+                type: string
+                example: W/"37-Rws2HztIqmr+vo8NbLOssrdqO+g"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 12:06:27 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Invalid Username
+                  value:
+                    error: Username must be at least 3 characters long
+                example-1:
+                  summary: Invalid Password
+                  value:
+                    error: Password must be at least 8 characters
+                example-2:
+                  summary: Incorrect Password or Username
+                  value:
+                    message: Invalid password or username
+                example-3:
+                  summary: User not found for authentication
+                  value:
+                    message: User not found
+  /balance:
+    get:
+      tags:
+        - Ballance
+      summary: Get User Ballance
+      description: Return data from the account balance on the logged user
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "20"
+            ETag:
+              schema:
+                type: string
+                example: W/"14-PWIB40IHCPiIQY0pdlk0dmt5yx4"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 12:35:07 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                balance: "100.00"
+        "401":
+          description: Unauthorized
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "41"
+            ETag:
+              schema:
+                type: string
+                example: W/"29-/SZAbrcKfwqGSheIqY2V7l8G0Ok"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 12:44:14 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: Token must be a valid token
+  /transfer:
+    post:
+      tags:
+        - Transactions
+      summary: Transfer
+      description: >-
+        Transfers an amount from the account user account 'cashOut' to the
+        account user 'cashIn'
+
+
+        **The following rules are checked for carrying out the transaction**
+
+
+        - The transaction only happens if the user of the cashOut account is
+        logged in
+
+        - The transaction only takes place if the cashOut account user has a
+        balance greater than or equal to the transfer amount.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                cashOut: outro4
+                cashIn: outro3
+                value: 10
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "167"
+            ETag:
+              schema:
+                type: string
+                example: W/"a7-MPA9PdMra4Bj8YbShOfJJrQetKs"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 12:52:08 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                response:
+                  response: Transfer successful
+                  transaction:
+                    id: 3
+                    creditedAccountId: 2
+                    debitedAccountId: 1
+                    value: "1.00"
+                    createdAt: "2022-11-19T12:52:08.754Z"
+        "400":
+          description: Bad Request
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "32"
+            ETag:
+              schema:
+                type: string
+                example: W/"20-gszukOUwM7qBWVjvz4Jk+Na2P+c"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 13:03:11 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: Insufficient funds
+        "401":
+          description: Unauthorized
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "28"
+            ETag:
+              schema:
+                type: string
+                example: W/"1c-ICfg6mOGUcUvcfXIIpyyzsE1+Bo"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 12:55:16 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Not Authorized Transfer
+                  value:
+                    message: not authorized
+                example-1:
+                  summary: Invalid Token
+                  value:
+                    message: Token must be a valid token
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get All Transactions
+      description: Returns the list of transactions that the logged in user participated in
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "658"
+            ETag:
+              schema:
+                type: string
+                example: W/"292-BO9DXtwTN9z7om/8xxlC8NCsQ9w"
+            Date:
+              schema:
+                type: string
+                example: Sat, 19 Nov 2022 18:46:27 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                transactions:
+                  - id: 6
+                    debitedAccountId: 6
+                    creditedAccountId: 4
+                    value: "1.00"
+                    createdAt: "2022-11-19T18:45:42.299Z"
+                  - id: 7
+                    debitedAccountId: 6
+                    creditedAccountId: 4
+                    value: "2.00"
+                    createdAt: "2022-11-19T18:45:46.190Z"
+                  - id: 8
+                    debitedAccountId: 6
+                    creditedAccountId: 4
+                    value: "5.00"
+                    createdAt: "2022-11-19T18:45:50.106Z"
+                  - id: 9
+                    debitedAccountId: 6
+                    creditedAccountId: 4
+                    value: "50.00"
+                    createdAt: "2022-11-19T18:45:53.153Z"
+                  - id: 10
+                    debitedAccountId: 6
+                    creditedAccountId: 4
+                    value: "10.00"
+                    createdAt: "2022-11-19T18:45:57.711Z"
+                  - id: 11
+                    debitedAccountId: 6
+                    creditedAccountId: 4
+                    value: "1.00"
+                    createdAt: "2022-11-19T18:46:01.010Z"
+        "401":
+          description: Unauthorized
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "41"
+            ETag:
+              schema:
+                type: string
+                example: W/"29-/SZAbrcKfwqGSheIqY2V7l8G0Ok"
+            Date:
+              schema:
+                type: string
+                example: Sun, 20 Nov 2022 13:51:38 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: Token must be a valid token
+  /transactions/query/:
+    get:
+      tags:
+        - Transactions
+      summary: Query Transactions
+      description: >-
+        Route provides filtering methods to query transactions by type (cashIn
+        or cashOut) and/or createdAt Date avaliable combinations is: 
+          - /transactions/query/?cashIn=true
+          - /transactions/query/?cashOut=true
+          - /transactions/query/?cashOut=true&createdAt=2022-11-20
+          - /transactions/query/?cashIn=true&createdAt=2022-11-20
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "126"
+            ETag:
+              schema:
+                type: string
+                example: W/"7e-ViiX+uuH4GHhYyZEk4EFhZ5x3HM"
+            Date:
+              schema:
+                type: string
+                example: Sun, 20 Nov 2022 14:02:58 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Query Transactions Success CashIn
+                  value:
+                    transactions:
+                      - id: 12
+                        debitedAccountId: 7
+                        creditedAccountId: 6
+                        value: "10.00"
+                        createdAt: "2022-11-19T20:02:58.791Z"
+                      - id: 13
+                        debitedAccountId: 1
+                        creditedAccountId: 6
+                        value: "50.00"
+                        createdAt: "2022-11-20T11:05:46.672Z"
+                example-1:
+                  summary: Query Transactions Success CashOut
+                  value:
+                    transactions:
+                      - id: 6
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "1.00"
+                        createdAt: "2022-11-19T18:45:42.299Z"
+                      - id: 7
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "2.00"
+                        createdAt: "2022-11-19T18:45:46.190Z"
+                      - id: 8
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "5.00"
+                        createdAt: "2022-11-19T18:45:50.106Z"
+                      - id: 11
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "1.00"
+                        createdAt: "2022-11-19T18:46:01.010Z"
+                      - id: 9
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "50.00"
+                        createdAt: "2022-11-20T18:45:53.153Z"
+                      - id: 10
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "10.00"
+                        createdAt: "2022-11-20T18:45:57.711Z"
+                example-2:
+                  summary: Query Transactions Success CashOut And CreatedAt Params
+                  value:
+                    transactions:
+                      - id: 9
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "50.00"
+                        createdAt: "2022-11-20T18:45:53.153Z"
+                      - id: 10
+                        debitedAccountId: 6
+                        creditedAccountId: 4
+                        value: "10.00"
+                        createdAt: "2022-11-20T18:45:57.711Z"
+                example-3:
+                  summary: Query Transactions Success CashIn And Created Params
+                  value:
+                    transactions:
+                      - id: 13
+                        debitedAccountId: 1
+                        creditedAccountId: 6
+                        value: "50.00"
+                        createdAt: "2022-11-20T11:05:46.672Z"
+        "401":
+          description: Unauthorized
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: "*"
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: "41"
+            ETag:
+              schema:
+                type: string
+                example: W/"29-/SZAbrcKfwqGSheIqY2V7l8G0Ok"
+            Date:
+              schema:
+                type: string
+                example: Sun, 20 Nov 2022 14:27:09 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: Token must be a valid token

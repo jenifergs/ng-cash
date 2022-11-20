@@ -5,6 +5,9 @@ ARG ENVIRONMENT
 WORKDIR /backend
 
 COPY package.json ./
+COPY swagger.yaml ./build/
+COPY swagger.yaml ./src/
+
 ADD . ./
 
 RUN ping -c 3 google.com 
