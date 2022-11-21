@@ -31,7 +31,7 @@ Desta forma a aplicação estará rodando, para verificar, basta executar verifi
 ## Detalhes de Implementação:
 ### Banco de Dados
 O banco de dados segue a estrutura: 
-![Database](./assets/Database.png)
+<img src="./assets/Database.png" width="600">
 ### Backend
 A aplicação é feita com Express + Sequelize e utiliza typescript.
 A aplicação segue uma arquitetura MVC, e possui rotas acessíveis via swagger para testes, mas você também poderá importar automaticamente as requisições para o seu insomnia para realizar os testes:
