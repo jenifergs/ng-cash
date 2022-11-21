@@ -31,6 +31,7 @@ Desta forma a aplicação estará rodando, para verificar, basta executar verifi
 ## Detalhes de Implementação:
 ### Banco de Dados
 O banco de dados segue a estrutura: 
+<br/>
 <img src="./assets/Database.png" width="600">
 ### Backend
 A aplicação é feita com Express + Sequelize e utiliza typescript.
