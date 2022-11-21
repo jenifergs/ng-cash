@@ -1,7 +1,7 @@
 # NG Cash Project
 Projeto teste no processo seletivo [NG Cash](https://ng.cash/seguranca)
 
-> Este projeto consiste em uma aplicação web para simulação de transferencia entre usuario
+> Este projeto consiste em uma aplicação web para simulação de transferencia entre usuários
 
 ## Lista de funcionalidades:
 - Registar um usuário na aplicação
