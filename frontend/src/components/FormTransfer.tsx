@@ -28,7 +28,7 @@ export default function FormTransfer({
       setReloadTable(true);
       alert("Transfer successfully");
     } else {
-      alert("Error when performing transfer" + data.error);
+      alert("Error when performing transfer " + data.error);
     }
   };
   return (
